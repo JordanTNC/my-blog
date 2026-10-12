@@ -1,0 +1,514 @@
+/* ---------- design tokens ---------- */
+:root {
+  --ink: #171b20;            /* cool near-black instead of warm black */
+  --ink-soft: #454c55;
+  --muted: #6b7380;
+  --border: #dde1e6;
+  --bg: #fdfbf7;             /* lighter, warm off-white background -- matches the original approved version */
+  --card-bg: #ffffff;
+  --accent: #2f5d7c;         /* deep slate blue -- used for links, rules */
+  --accent-hover: #1f4258;
+  --site-name-color: #1e3a66; /* navy blue for the site name/logo */
+  --pill-bg: #eceff2;
+  --pill-ink: #3a4048;
+  --max-width: 680px;
+  --article-width: 760px;   /* article reading column: a bit wider than lists */
+
+  /* Fixed-order categorical palette (7 hues) for category chips -- each
+     category gets a consistent, distinguishable color rather than a random
+     one, and the order never changes as categories are added/removed.
+     Deep, "serious" tones (slate, teal, purple, brown, etc.) rather than
+     bright pastels, used directly as the chip's dominant color. No plain
+     navy blue here since the site name itself is already navy -- using it
+     again for a category would be too similar/repetitive. */
+  --cat-1: #3d5a73; /* slate blue-grey */
+  --cat-2: #1b6e64; /* teal */
+  --cat-3: #5c3a7a; /* purple */
+  --cat-4: #7a4a26; /* brown */
+  --cat-5: #8c3333; /* maroon / brick red */
+  --cat-6: #52631f; /* olive green */
+  --cat-7: #a8421c; /* dark orange-red */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- banner ---------- */
+
+.site-banner {
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+}
+
+.site-banner-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 22px 24px 18px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.site-name-wrap {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.site-name {
+  text-align: center;
+  font-family: "Dancing Script", "Brush Script MT", cursive;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--site-name-color);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.site-name:hover { opacity: 0.85; }
+
+.site-banner-rule {
+  width: 48px;
+  height: 3px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.admin-nav {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.admin-nav a:hover { color: var(--ink); }
+
+/* ---------- layout ---------- */
+
+.page-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.page-content.wide { max-width: var(--article-width); }
+
+.section { margin-bottom: 56px; }
+.section.narrow { max-width: 420px; margin: 40px auto; }
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.section-title-rule {
+  width: 32px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 999px;
+  opacity: 0.6;
+  margin: 0 0 20px;
+}
+
+.empty-state { color: var(--muted); }
+
+/* ---------- article list rows (home, /articles, /category) ---------- */
+
+.article-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.article-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 12px;
+  margin: 0 -12px;
+  border-bottom: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+.article-row:hover { background: rgba(23, 27, 32, 0.035); }
+
+.article-row-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.article-row-title:hover { color: var(--accent); }
+
+.article-row-date {
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.more-wrap { margin-top: 28px; text-align: center; }
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-primary:hover { background: #000; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--border);
+}
+.btn-secondary:hover { border-color: var(--ink); }
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+.link-button:hover { color: var(--ink); }
+.link-button.danger:hover { color: #b3261e; }
+
+.inline-form { display: inline; margin: 0; }
+.inline-form-row { display: flex; gap: 10px; margin-top: 14px; }
+.inline-form-row input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* ---------- category / tag buttons ---------- */
+
+.tag-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-button {
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-weight: 700;
+  text-align: center;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.tag-button:hover { border-color: var(--ink-soft); }
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pill-bg);
+  color: var(--pill-ink);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+.tag-pill:hover { filter: brightness(0.97); }
+
+.admin-tag { padding-right: 8px; }
+
+/* Each category gets a consistent color from the fixed 8-hue palette above,
+   assigned by (category id mod 8) -- see views where tag-color-N is applied.
+   Mixed with the page's own ink/background (rather than pure black/white)
+   so they read as muted, deep tones instead of bright pastels. */
+.tag-color-0 { --cc: var(--cat-1); }
+.tag-color-1 { --cc: var(--cat-2); }
+.tag-color-2 { --cc: var(--cat-3); }
+.tag-color-3 { --cc: var(--cat-4); }
+.tag-color-4 { --cc: var(--cat-5); }
+.tag-color-5 { --cc: var(--cat-6); }
+.tag-color-6 { --cc: var(--cat-7); }
+
+.tag-button[class*="tag-color-"] {
+  background: color-mix(in srgb, var(--cc) 10%, var(--bg));
+  border-color: color-mix(in srgb, var(--cc) 35%, var(--border));
+  color: color-mix(in srgb, var(--cc) 75%, var(--ink));
+}
+.tag-button[class*="tag-color-"]:hover {
+  background: color-mix(in srgb, var(--cc) 16%, var(--bg));
+}
+
+.tag-pill[class*="tag-color-"] {
+  background: color-mix(in srgb, var(--cc) 12%, var(--bg));
+  border-color: color-mix(in srgb, var(--cc) 32%, var(--border));
+  color: color-mix(in srgb, var(--cc) 75%, var(--ink));
+}
+
+/* ---------- pagination ---------- */
+
+.pagination {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.95rem;
+}
+
+.page-link { font-weight: 600; }
+.page-link:hover { color: var(--accent); }
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 auto;
+}
+
+.page-number {
+  min-width: 30px;
+  padding: 6px 8px;
+  text-align: center;
+  border-radius: 6px;
+}
+.page-number:hover { background: var(--pill-bg); }
+.page-number.current {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+}
+.page-ellipsis { color: var(--muted); padding: 0 2px; }
+
+/* ---------- single article ---------- */
+
+.article-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.1rem;
+  line-height: 1.25;
+  font-weight: 700;
+  margin: 8px 0 12px;
+}
+
+.article-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.article-meta-updated { margin-left: 4px; }
+
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.article-body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+/* A single Enter/Return in the editor makes a new paragraph, which browsers
+   space out by default -- that's the "double space" look. Removing the
+   margin here makes one Return behave like a plain new line; leaving a
+   blank line (pressing Enter twice) still reads as a paragraph break,
+   since the empty paragraph in between adds its own line of height. */
+.article-body p { margin: 0; }
+.article-body h1, .article-body h2, .article-body h3 {
+  font-weight: 700;
+  margin: 1.6em 0 0.6em;
+  line-height: 1.3;
+}
+.article-body h1 { font-size: 1.6em; }
+.article-body h2 { font-size: 1.35em; }
+.article-body h3 { font-size: 1.15em; }
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1em 0;
+  display: block;
+}
+
+.article-body blockquote {
+  margin: 1.4em 0;
+  padding-left: 1em;
+  border-left: 3px solid var(--border);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.article-body ul, .article-body ol { margin: 0 0 1.3em; padding-left: 1.4em; }
+
+/* Links inside article content -- this is the "colored text that shows
+   it's clickable" the whole editor exists for. */
+.article-body a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(47, 93, 124, 0.4);
+}
+.article-body a:hover { color: var(--accent-hover); }
+
+.article-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- forms (admin) ---------- */
+
+.stacked-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stacked-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.stacked-form input[type="text"],
+.stacked-form input[type="password"] {
+  font-weight: 400;
+  font-size: 1rem;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.checkbox-row {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field-label { font-weight: 600; font-size: 0.9rem; }
+
+.form-actions { display: flex; gap: 12px; }
+
+.tag-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding: 12px 0;
+}
+.tag-checkbox {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400 !important;
+}
+
+#editor-toolbar { border-radius: 8px 8px 0 0; }
+.pdf-attach-btn {
+  width: auto !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+#editor {
+  min-height: 320px;
+  font-size: 1.05rem;
+  background: #fff;
+  border-radius: 0 0 8px 8px;
+}
+
+/* ---------- notices ---------- */
+
+.notice {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+.notice-error { background: #fdecea; color: #7a1c14; }
+.notice-success { background: #e9f7ec; color: #1e5c2c; }
+.notice pre {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: inline-block;
+}
+
+/* ---------- admin dashboard table ---------- */
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.admin-table th, .admin-table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-table th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.02em; }
+.admin-table-actions { display: flex; gap: 12px; white-space: nowrap; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 520px) {
+  .article-title { font-size: 1.7rem; }
+  .site-banner-inner { padding: 16px 16px 12px; }
+  .site-name { font-size: 2rem; }
+  .page-content { padding: 28px 16px 64px; }
+  .pagination { flex-direction: column; }
+  .page-numbers { order: -1; }
+  .article-row { flex-direction: column; gap: 4px; }
+  .article-row-date { white-space: normal; }
+}

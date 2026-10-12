@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="page-content wide">
+    <article class="article">
+      <h1 class="article-title"><%= post.title %></h1>
+
+      <div class="article-meta">
+        <span>Posted <%= formatDateTime(post.created_at) %></span>
+        <% if (wasEdited) { %>
+          <span class="article-meta-updated">&middot; Last updated <%= formatDateTime(post.updated_at) %></span>
+        <% } %>
+      </div>
+
+      <% if (post.tags && post.tags.length) { %>
+        <div class="article-tags">
+          <% post.tags.forEach(function (tag) { %>
+            <a class="tag-pill tag-color-<%= tag.id % 7 %>" href="/category/<%= tag.slug %>"><%= tag.name %></a>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="article-body">
+        <%- post.content %>
+      </div>
+
+      <div class="article-footer">
+        <a class="btn btn-secondary" href="/">&larr; Back to <%= siteName %></a>
+      </div>
+    </article>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

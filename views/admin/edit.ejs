@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="stylesheet" href="/vendor/quill/quill.snow.css" />
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main class="page-content">
+    <section class="section">
+      <h1 class="section-title"><%= post ? 'Edit Post' : 'New Post' %></h1>
+
+      <% if (typeof saved !== 'undefined' && saved) { %>
+        <div class="notice notice-success">Saved.</div>
+      <% } %>
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="notice notice-error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="<%= formAction %>" id="post-form" class="stacked-form">
+        <label>
+          Title
+          <input type="text" name="title" id="title-input" value="<%= post ? post.title : '' %>" required autofocus />
+        </label>
+
+        <div class="field">
+          <span class="field-label">Content</span>
+          <div id="editor-toolbar">
+            <span class="ql-formats">
+              <select class="ql-header" defaultValue="">
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value=""></option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold"></button>
+              <button class="ql-italic"></button>
+              <button class="ql-underline"></button>
+              <button class="ql-strike"></button>
+            </span>
+            <span class="ql-formats">
+              <select class="ql-color"></select>
+              <select class="ql-background"></select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered"></button>
+              <button class="ql-list" value="bullet"></button>
+              <button class="ql-blockquote"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-link"></button>
+              <button class="ql-image"></button>
+              <button type="button" id="attach-pdf-btn" class="pdf-attach-btn" title="Attach a PDF">PDF</button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-clean"></button>
+            </span>
+          </div>
+          <div id="editor"><%- post ? post.content : '' %></div>
+        </div>
+        <textarea name="content" id="content-input" style="display:none"></textarea>
+
+        <div class="field">
+          <span class="field-label">Categories / Tags</span>
+          <div class="tag-checkboxes">
+            <% allTags.forEach(function (tag) { %>
+              <label class="tag-checkbox">
+                <input
+                  type="checkbox"
+                  name="tags"
+                  value="<%= tag.id %>"
+                  <%= post && post.tags.some(function (t) { return t.id === tag.id; }) ? 'checked' : '' %>
+                />
+                <%= tag.name %>
+              </label>
+            <% }) %>
+          </div>
+          <label>
+            Add new categories (comma separated)
+            <input type="text" name="newTags" placeholder="e.g. Travel, Books" />
+          </label>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" name="published" <%= (!post || post.published) ? 'checked' : '' %> />
+          Published (uncheck to save as a private draft)
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <a class="btn btn-secondary" href="/admin">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/vendor/quill/quill.min.js"></script>
+  <script src="/vendor/image-resize/image-resize.min.js"></script>
+  <script src="/js/admin-editor.js"></script>
+</body>
+</html>

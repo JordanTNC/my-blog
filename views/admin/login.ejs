@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main class="page-content">
+    <section class="section narrow">
+      <h1 class="section-title">Log in</h1>
+
+      <% if (!configured) { %>
+        <div class="notice notice-error">
+          <p>No admin account has been set up yet.</p>
+          <p>On the computer or server running this site, run:</p>
+          <pre>npm run create-admin</pre>
+          <p>Then reload this page.</p>
+        </div>
+      <% } %>
+
+      <% if (error) { %>
+        <div class="notice notice-error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/admin/login" class="stacked-form">
+        <input type="hidden" name="next" value="<%= next %>" />
+        <label>
+          Username
+          <input type="text" name="username" autocomplete="username" required <%= configured ? '' : 'disabled' %> />
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" autocomplete="current-password" required <%= configured ? '' : 'disabled' %> />
+        </label>
+        <button type="submit" class="btn btn-primary" <%= configured ? '' : 'disabled' %>>Log in</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

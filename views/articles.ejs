@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="page-content">
+    <section class="section">
+      <h1 class="section-title"><%= heading %></h1>
+      <div class="section-title-rule"></div>
+
+      <% if (posts.length === 0) { %>
+        <p class="empty-state">No articles here yet.</p>
+      <% } else { %>
+        <ul class="article-list">
+          <% posts.forEach(function (post) { %>
+            <li class="article-row">
+              <a class="article-row-title" href="/post/<%= post.slug %>"><%= post.title %></a>
+              <span class="article-row-date"><%= formatDateTime(post.created_at) %></span>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <%- include('partials/pagination') %>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

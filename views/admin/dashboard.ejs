@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main class="page-content">
+    <section class="section">
+      <div class="dashboard-header">
+        <h1 class="section-title">Dashboard</h1>
+        <a class="btn btn-primary" href="/admin/new">+ New Post</a>
+      </div>
+
+      <% if (posts.length === 0) { %>
+        <p class="empty-state">You haven't written anything yet.</p>
+      <% } else { %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Posted</th>
+              <th>Tags</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% posts.forEach(function (post) { %>
+              <tr>
+                <td><a href="/admin/edit/<%= post.id %>"><%= post.title %></a></td>
+                <td><%= post.published ? 'Published' : 'Draft' %></td>
+                <td><%= formatDateTime(post.created_at) %></td>
+                <td><%= post.tags.map(function (t) { return t.name; }).join(', ') %></td>
+                <td class="admin-table-actions">
+                  <a href="/admin/edit/<%= post.id %>">Edit</a>
+                  <form method="POST" action="/admin/delete/<%= post.id %>" class="inline-form" data-confirm="Delete this post? This can't be undone.">
+                    <button type="submit" class="link-button danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Categories / Tags</h2>
+      <div class="tag-grid">
+        <% allTags.forEach(function (tag) { %>
+          <span class="tag-pill admin-tag tag-color-<%= tag.id % 7 %>">
+            <%= tag.name %> (<%= tag.post_count %>)
+            <form method="POST" action="/admin/tags/<%= tag.id %>/delete" class="inline-form" data-confirm="Remove the '<%= tag.name %>' category? Posts keep their other tags.">
+              <button type="submit" class="link-button danger" title="Delete category">&times;</button>
+            </form>
+          </span>
+        <% }) %>
+      </div>
+      <form method="POST" action="/admin/tags" class="inline-form-row">
+        <input type="text" name="name" placeholder="New category name" required />
+        <button type="submit" class="btn btn-secondary">Add Category</button>
+      </form>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Site Settings</h2>
+      <form method="POST" action="/admin/settings" class="inline-form-row">
+        <input type="text" name="siteName" value="<%= siteName %>" required />
+        <button type="submit" class="btn btn-secondary">Save Site Name</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

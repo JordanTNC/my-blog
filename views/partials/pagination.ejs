@@ -1,0 +1,23 @@
+<% if (totalPages > 1) { %>
+  <nav class="pagination" aria-label="Pagination">
+    <% if (page > 1) { %>
+      <a class="page-link prev" href="<%= baseUrl %>?page=<%= page - 1 %>">&larr; Previous</a>
+    <% } %>
+
+    <div class="page-numbers">
+      <% pageList.forEach(function (item) { %>
+        <% if (item.ellipsis) { %>
+          <span class="page-ellipsis">&hellip;</span>
+        <% } else if (item.current) { %>
+          <span class="page-number current"><%= item.page %></span>
+        <% } else { %>
+          <a class="page-number" href="<%= baseUrl %>?page=<%= item.page %>"><%= item.page === totalPages ? 'Last' : item.page %></a>
+        <% } %>
+      <% }) %>
+    </div>
+
+    <% if (page < totalPages) { %>
+      <a class="page-link next" href="<%= baseUrl %>?page=<%= page + 1 %>">Next Page &rarr;</a>
+    <% } %>
+  </nav>
+<% } %>

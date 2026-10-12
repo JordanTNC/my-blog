@@ -1,0 +1,16 @@
+<header class="site-banner">
+  <div class="site-banner-inner">
+    <div class="site-name-wrap">
+      <a class="site-name" href="/"><%= siteName %></a>
+      <div class="site-banner-rule"></div>
+    </div>
+    <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+      <nav class="admin-nav">
+        <a href="/admin">Dashboard</a>
+        <form method="POST" action="/admin/logout" class="inline-form">
+          <button type="submit" class="link-button">Log out</button>
+        </form>
+      </nav>
+    <% } %>
+  </div>
+</header>
