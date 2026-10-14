@@ -35,8 +35,62 @@
                 <td><%= post.tags.map(function (t) { return t.name; }).join(', ') %></td>
                 <td class="admin-table-actions">
                   <a href="/admin/edit/<%= post.id %>">Edit</a>
+                  <% if (post.pinned) { %>
+                    <form method="POST" action="/admin/pinned/<%= post.id %>/unpin" class="inline-form">
+                      <button type="submit" class="link-button">Unpin</button>
+                    </form>
+                  <% } else { %>
+                    <form method="POST" action="/admin/pinned/<%= post.id %>/pin" class="inline-form">
+                      <button type="submit" class="link-button">Pin</button>
+                    </form>
+                  <% } %>
                   <form method="POST" action="/admin/delete/<%= post.id %>" class="inline-form" data-confirm="Delete this post? This can't be undone.">
                     <button type="submit" class="link-button danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Pinned Articles</h2>
+      <p class="section-hint">
+        These are the articles shown in the "Pinned Articles" section of your
+        homepage, in this order (top of this list = shows first). Use
+        <strong>Pin</strong> next to a post above to add it here, and the
+        arrows below to reorder it.
+      </p>
+
+      <% if (pinnedPosts.length === 0) { %>
+        <p class="empty-state">Nothing pinned yet.</p>
+      <% } else { %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pinnedPosts.forEach(function (post, i) { %>
+              <tr>
+                <td><a href="/admin/edit/<%= post.id %>"><%= post.title %></a><% if (!post.published) { %> <span class="muted-inline">(draft)</span><% } %></td>
+                <td class="admin-table-actions">
+                  <% if (i > 0) { %>
+                    <form method="POST" action="/admin/pinned/<%= post.id %>/move-up" class="inline-form">
+                      <button type="submit" class="link-button" title="Move up">&uarr;</button>
+                    </form>
+                  <% } %>
+                  <% if (i < pinnedPosts.length - 1) { %>
+                    <form method="POST" action="/admin/pinned/<%= post.id %>/move-down" class="inline-form">
+                      <button type="submit" class="link-button" title="Move down">&darr;</button>
+                    </form>
+                  <% } %>
+                  <form method="POST" action="/admin/pinned/<%= post.id %>/unpin" class="inline-form">
+                    <button type="submit" class="link-button danger">Remove</button>
                   </form>
                 </td>
               </tr>

@@ -190,6 +190,87 @@ function getAllPostsForAdmin() {
   return rows.map(attachTags);
 }
 
+// ---------- pinned articles ----------
+// A short, hand-ordered list of posts the admin chooses to feature, separate
+// from (and unrelated to) the automatic, by-date "Recent Articles" list.
+// `pin_order` is just a sort key (lower = higher up the list) -- gaps in it
+// are harmless, so pinning/unpinning never needs to renumber anything else.
+
+function getPinnedPosts(limit) {
+  const rows = db
+    .prepare(
+      `SELECT * FROM posts WHERE pinned = 1 AND published = 1
+       ORDER BY pin_order ASC, id ASC LIMIT ?`
+    )
+    .all(limit);
+  return rows.map(attachTags);
+}
+
+function countPinnedPublished() {
+  return db
+    .prepare('SELECT COUNT(*) AS c FROM posts WHERE pinned = 1 AND published = 1')
+    .get().c;
+}
+
+function getPinnedPostsPage(page, pageSize) {
+  const total = countPinnedPublished();
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const offset = (safePage - 1) * pageSize;
+  const rows = db
+    .prepare(
+      `SELECT * FROM posts WHERE pinned = 1 AND published = 1
+       ORDER BY pin_order ASC, id ASC LIMIT ? OFFSET ?`
+    )
+    .all(pageSize, offset);
+  return { posts: rows.map(attachTags), total, totalPages, page: safePage };
+}
+
+// All pinned posts (including unpublished drafts), for the admin dashboard's
+// reorder/remove list -- unlike the two functions above, which only ever
+// show visitors published posts.
+function getPinnedPostsForAdmin() {
+  const rows = db
+    .prepare('SELECT * FROM posts WHERE pinned = 1 ORDER BY pin_order ASC, id ASC')
+    .all();
+  return rows.map(attachTags);
+}
+
+function pinPost(id) {
+  const row = db.prepare('SELECT MAX(pin_order) AS maxOrder FROM posts WHERE pinned = 1').get();
+  const nextOrder = (row.maxOrder || 0) + 1;
+  db.prepare('UPDATE posts SET pinned = 1, pin_order = ? WHERE id = ?').run(nextOrder, id);
+}
+
+function unpinPost(id) {
+  db.prepare('UPDATE posts SET pinned = 0, pin_order = NULL WHERE id = ?').run(id);
+}
+
+function movePinned(id, direction) {
+  const list = db
+    .prepare('SELECT id, pin_order FROM posts WHERE pinned = 1 ORDER BY pin_order ASC, id ASC')
+    .all();
+  const idx = list.findIndex((p) => p.id === Number(id));
+  if (idx === -1) return;
+  const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= list.length) return;
+  const a = list[idx];
+  const b = list[swapIdx];
+  const swap = db.transaction(() => {
+    db.prepare('UPDATE posts SET pin_order = ? WHERE id = ?').run(b.pin_order, a.id);
+    db.prepare('UPDATE posts SET pin_order = ? WHERE id = ?').run(a.pin_order, b.id);
+  });
+  swap();
+}
+
+function movePinnedUp(id) {
+  movePinned(id, 'up');
+}
+
+function movePinnedDown(id) {
+  movePinned(id, 'down');
+}
+
 function createPost({ title, content, tagIds, published }) {
   const slug = uniqueSlug(title, 'posts');
   const now = nowIso();
@@ -251,4 +332,11 @@ module.exports = {
   createPost,
   updatePost,
   deletePost,
+  getPinnedPosts,
+  getPinnedPostsPage,
+  getPinnedPostsForAdmin,
+  pinPost,
+  unpinPost,
+  movePinnedUp,
+  movePinnedDown,
 };

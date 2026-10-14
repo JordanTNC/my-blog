@@ -31,6 +31,28 @@
       <% } %>
     </section>
 
+    <% if (pinned.length > 0) { %>
+      <section class="section">
+        <h2 class="section-title">Pinned Articles</h2>
+        <div class="section-title-rule"></div>
+
+        <ul class="article-list">
+          <% pinned.forEach(function (post) { %>
+            <li class="article-row">
+              <a class="article-row-title" href="/post/<%= post.slug %>"><%= post.title %></a>
+              <span class="article-row-date"><%= formatDateTime(post.created_at) %></span>
+            </li>
+          <% }) %>
+        </ul>
+
+        <% if (pinnedHasMore) { %>
+          <div class="more-wrap">
+            <a class="btn btn-secondary" href="/pinned">More</a>
+          </div>
+        <% } %>
+      </section>
+    <% } %>
+
     <section class="section">
       <h2 class="section-title">Articles by Topic</h2>
       <div class="section-title-rule"></div>

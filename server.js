@@ -16,6 +16,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOME_RECENT_COUNT = 15;
 const PAGE_SIZE = 30;
+const HOME_PINNED_COUNT = 10;
+const PINNED_PAGE_SIZE = 20;
 
 const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -113,10 +115,32 @@ const uploadFile = multer({
 
 app.get('/', (req, res) => {
   const recent = models.getRecentPosts(HOME_RECENT_COUNT);
+  const pinned = models.getPinnedPosts(HOME_PINNED_COUNT);
   res.render('index', {
     title: res.locals.siteName,
     recent,
     hasMore: recent.length === HOME_RECENT_COUNT,
+    pinned,
+    pinnedHasMore: pinned.length === HOME_PINNED_COUNT,
+    formatDateTime,
+    excerpt,
+  });
+});
+
+app.get('/pinned', (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1;
+  const { posts, totalPages, page: safePage } = models.getPinnedPostsPage(
+    page,
+    PINNED_PAGE_SIZE
+  );
+  res.render('articles', {
+    title: `Pinned Articles – ${res.locals.siteName}`,
+    heading: 'Pinned Articles',
+    posts,
+    page: safePage,
+    totalPages,
+    pageList: getPageList(safePage, totalPages),
+    baseUrl: '/pinned',
     formatDateTime,
     excerpt,
   });
@@ -224,6 +248,7 @@ app.get('/admin', requireAdmin, (req, res) => {
   res.render('admin/dashboard', {
     title: `Dashboard – ${res.locals.siteName}`,
     posts: models.getAllPostsForAdmin(),
+    pinnedPosts: models.getPinnedPostsForAdmin(),
     formatDateTime,
     siteName: res.locals.siteName,
   });
@@ -345,6 +370,28 @@ app.post('/admin/edit/:id', requireAdmin, (req, res) => {
 
 app.post('/admin/delete/:id', requireAdmin, (req, res) => {
   models.deletePost(req.params.id);
+  res.redirect('/admin');
+});
+
+// ---- pinned articles (hand-picked, hand-ordered homepage section) ----
+
+app.post('/admin/pinned/:id/pin', requireAdmin, (req, res) => {
+  models.pinPost(req.params.id);
+  res.redirect('/admin');
+});
+
+app.post('/admin/pinned/:id/unpin', requireAdmin, (req, res) => {
+  models.unpinPost(req.params.id);
+  res.redirect('/admin');
+});
+
+app.post('/admin/pinned/:id/move-up', requireAdmin, (req, res) => {
+  models.movePinnedUp(req.params.id);
+  res.redirect('/admin');
+});
+
+app.post('/admin/pinned/:id/move-down', requireAdmin, (req, res) => {
+  models.movePinnedDown(req.params.id);
   res.redirect('/admin');
 });
 

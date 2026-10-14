@@ -151,6 +151,13 @@ again on your own computer and update the `ADMIN_USERNAME` /
 - **Pagination:** your homepage always shows your 15 most recent articles.
   The "More" button leads to a full listing, 30 articles per page, with
   "Next Page" and numbered page links. Category pages work the same way.
+- **Pin an article:** next to any post on the dashboard, click **Pin**. It's
+  added to the bottom of the "Pinned Articles" section (shown below "Recent
+  Articles" on your homepage, with a "Pinned Articles" section of its own
+  further down the dashboard). Unlike "Recent Articles," this list is never
+  reordered automatically -- use the &uarr;/&darr; arrows in that section to
+  move an article up or down, or **Remove** to unpin it. The homepage shows
+  the first 10; a "More" button leads to the rest, 20 per page.
 
 ## Changing how it behaves
 
@@ -164,6 +171,35 @@ to track these down yourself: whenever you want something like this
 changed, just describe what you want and hand me the project again (or
 keep working with me in the same place you got this from), and I'll make
 the change and give you the updated files.
+
+## Getting a future update live
+
+Whenever I make a code change for you (a new feature, a tweak, a fix), the
+path to get it onto your actual live site is always the same, and it's
+short:
+
+1. I'll give you an updated project folder, the same way as the first time.
+2. Unzip it, and copy its files over your existing `blog-app` folder on your
+   computer, replacing the old ones. (It never includes your `.env` file or
+   your `data/` folder, so your admin login and your posts are never
+   touched by this -- those only ever live on your computer and on Render.)
+3. In your terminal, `cd` into the `blog-app` folder and run:
+   ```
+   git add .
+   git commit -m "Describe what changed"
+   git push
+   ```
+4. That's it -- Render watches your GitHub repository and automatically
+   starts a new deploy within moments of the push, using the same settings
+   (environment variables, disk, etc.) you already configured. You can
+   watch it build on your Render dashboard, the same place you watched the
+   very first deploy.
+
+Nothing about your environment variables, your disk, or your Render service
+itself needs to be touched again for an ordinary code update like this --
+those were one-time setup. The only exception would be if a future change
+needed a brand new environment variable, in which case I'll tell you
+explicitly when that's the case.
 
 ## How it's built (only if you're curious)
 

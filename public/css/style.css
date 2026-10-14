@@ -133,6 +133,15 @@ a { color: inherit; text-decoration: none; }
 
 .empty-state { color: var(--muted); }
 
+.section-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: -8px 0 16px;
+  max-width: 60ch;
+}
+
+.muted-inline { color: var(--muted); font-size: 0.85rem; }
+
 /* ---------- article list rows (home, /articles, /category) ---------- */
 
 .article-list {

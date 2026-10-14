@@ -23,7 +23,9 @@ db.exec(`
     content TEXT NOT NULL DEFAULT '',
     published INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
+    updated_at TEXT NOT NULL,
+    pinned INTEGER NOT NULL DEFAULT 0,
+    pin_order INTEGER
   );
 
   CREATE TABLE IF NOT EXISTS tags (
@@ -46,5 +48,20 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC);
   CREATE INDEX IF NOT EXISTS idx_posts_published ON posts(published);
 `);
+
+// Migration: older databases (created before the "Pinned Articles" feature
+// existed) won't have the pinned/pin_order columns from the CREATE TABLE
+// above, since that only applies to brand-new databases. Add them here if
+// they're missing, so upgrading to this version never requires manually
+// touching the database.
+const postColumns = db.prepare('PRAGMA table_info(posts)').all().map((c) => c.name);
+if (!postColumns.includes('pinned')) {
+  db.exec('ALTER TABLE posts ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0');
+}
+if (!postColumns.includes('pin_order')) {
+  db.exec('ALTER TABLE posts ADD COLUMN pin_order INTEGER');
+}
+
+db.exec('CREATE INDEX IF NOT EXISTS idx_posts_pinned ON posts(pinned, pin_order)');
 
 module.exports = db;
