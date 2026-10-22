@@ -152,7 +152,7 @@ again on your own computer and update the `ADMIN_USERNAME` /
   The "More" button leads to a full listing, 30 articles per page, with
   "Next Page" and numbered page links. Category pages work the same way.
 - **Pin an article:** next to any post on the dashboard, click **Pin**. It's
-  added to the bottom of the "Pinned Articles" section (shown below "Recent
+  added to the bottom of the "Pinned Articles" section (shown above "Recent
   Articles" on your homepage, with a "Pinned Articles" section of its own
   further down the dashboard). Unlike "Recent Articles," this list is never
   reordered automatically -- use the &uarr;/&darr; arrows in that section to
