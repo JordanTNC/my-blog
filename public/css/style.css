@@ -12,6 +12,7 @@
   --pill-bg: #eceff2;
   --pill-ink: #3a4048;
   --max-width: 680px;
+  --home-width: 872px;      /* homepage only: ~1 inch (96px) wider on each side than --max-width, since it's just a list of clickable titles rather than a reading column */
   --article-width: 760px;   /* article reading column: a bit wider than lists */
 
   /* Fixed-order categorical palette (7 hues) for category chips -- each
@@ -111,6 +112,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .page-content.wide { max-width: var(--article-width); }
+.page-content.home { max-width: var(--home-width); }
 
 .section { margin-bottom: 56px; }
 .section.narrow { max-width: 420px; margin: 40px auto; }
